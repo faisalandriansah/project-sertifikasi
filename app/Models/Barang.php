@@ -64,19 +64,25 @@ class Barang extends Model
     }
 
     // format harga jual ke format rupiah
-    public function getHargajualFormatAttribute():string
-     {
+    public function getHargajualFormatAttribute(): string
+    {
         return 'Rp ' . number_format($this->harga_jual, 0, ',', '.');
     }
 
+    // format harga beli ke format rupiah
+    public function getHargabeliFormatAttribute(): string
+    {
+        return 'Rp ' . number_format($this->harga_beli, 0, ',', '.');
+    }
+
     // cek apakah stok barang ini tergolong menipis (<20)
-    public function isStokMenipis():bool
+    public function isStokMenipis(): bool
     {
         return $this->jumlah_stok < 20;
     }
 
     // cek apakah stok barang habis (= 0)
-    public function isStokHabis():bool
+    public function isStokHabis(): bool
     {
         return $this->jumlah_stok === 0;
     }

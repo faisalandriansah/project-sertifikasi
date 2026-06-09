@@ -33,8 +33,8 @@
 
             <div id="upload-area" onclick="document.getElementById('input-foto').click()"
                 class="border-2 border-dashed border-zinc-200 rounded-xl p-8
-                        flex flex-col items-center justify-center gap-3 cursor-pointer
-                        hover:border-brand-400 hover:bg-brand-50/30 transition-colors">
+                flex flex-col items-center justify-center gap-3 cursor-pointer
+                hover:border-brand-400 hover:bg-brand-50/30 transition-colors">
 
                 {{-- Preview foto --}}
                 <div id="preview-wrapper" class="{{ $barang && $barang->gambar ? '' : 'hidden' }} text-center">
@@ -47,11 +47,12 @@
                 </div>
 
                 {{-- Placeholder --}}
-                <div id="placeholder-upload" class="{{ $barang && $barang->gambar ? 'hidden' : '' }} text-center">
+                <div id="placeholder-upload"
+                    class="{{ $barang && $barang->gambar ? 'hidden' : '' }} text-center {{ !$barang ? '' : '' }}">
                     <svg class="w-10 h-10 text-zinc-300 mx-auto mb-2" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01
-                                         M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <p class="text-sm text-zinc-500">Klik untuk memilih foto</p>
                     <p class="text-xs text-zinc-400 mt-0.5">Format JPG, PNG — Maks. 2 MB</p>
@@ -68,8 +69,6 @@
 
         {{-- ── Field Barang --}}
         <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
-
-            {{-- Input reusable helper via @include tidak tersedia, jadi inline --}}
 
             {{-- Nama barang --}}
             <div class="sm:col-span-2">
@@ -124,11 +123,11 @@
                 <label class="block text-sm font-medium text-zinc-700 mb-1.5">
                     Jumlah stok <span class="text-red-500">*</span>
                 </label>
-                <input type="number" name="jumlah_stok" min="0"
-                    value="{{ old('jumlah_stok', $barang?->jumlah_stok ?? 0) }}"
+                <input type="number" name="jumlah_stok" min="0" placeholder="0"
+                    value="{{ old('jumlah_stok', $barang?->jumlah_stok ?? '') }}"
                     class="w-full px-3.5 py-2.5 text-sm border rounded-lg outline-none
-                              @error('jumlah_stok') border-red-400 bg-red-50 @else border-zinc-200 @enderror
-                              focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                  @error('jumlah_stok') border-red-400 bg-red-50 @else border-zinc-200 @enderror
+                  focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
                 @error('jumlah_stok')
                     <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                 @enderror
@@ -137,10 +136,10 @@
             {{-- Stok minimum --}}
             <div>
                 <label class="block text-sm font-medium text-zinc-700 mb-1.5">Stok minimum</label>
-                <input type="number" name="stok_minimum" min="0"
-                    value="{{ old('stok_minimum', $barang?->stok_minimum ?? 0) }}"
+                <input type="number" name="stok_minimum" min="0" placeholder="0"
+                    value="{{ old('stok_minimum', $barang?->stok_minimum ?? '') }}"
                     class="w-full px-3.5 py-2.5 text-sm border border-zinc-200 rounded-lg outline-none
-                              focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                  focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
             </div>
 
             {{-- Harga jual --}}
@@ -218,11 +217,46 @@
 
             const reader = new FileReader();
             reader.onload = (e) => {
-                document.getElementById('preview-foto').src = e.target.result;
+                // Jika belum ada elemen preview-foto, buat elemen tersebut
+                let previewImg = document.getElementById('preview-foto');
+                if (!previewImg) {
+                    // Buat elemen gambar preview
+                    previewImg = document.createElement('img');
+                    previewImg.id = 'preview-foto';
+                    previewImg.alt = 'Preview';
+                    previewImg.className = 'h-36 rounded-lg object-cover mx-auto mb-2 shadow-sm';
+
+                    // Update preview wrapper
+                    const previewWrapper = document.getElementById('preview-wrapper');
+                    previewWrapper.innerHTML = '';
+                    previewWrapper.appendChild(previewImg);
+                    const caption = document.createElement('p');
+                    caption.className = 'text-xs text-zinc-400';
+                    caption.textContent = 'Klik untuk ganti foto';
+                    previewWrapper.appendChild(caption);
+                }
+
+                previewImg.src = e.target.result;
                 document.getElementById('preview-wrapper').classList.remove('hidden');
                 document.getElementById('placeholder-upload').classList.add('hidden');
             };
             reader.readAsDataURL(file);
+        });
+
+        // Memastikan placeholder muncul saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Jika ini form tambah barang (tidak ada $barang atau $barang->gambar kosong)
+            @if (!$barang || !$barang->gambar)
+                const previewWrapper = document.getElementById('preview-wrapper');
+                const placeholderUpload = document.getElementById('placeholder-upload');
+
+                if (previewWrapper) {
+                    previewWrapper.classList.add('hidden');
+                }
+                if (placeholderUpload) {
+                    placeholderUpload.classList.remove('hidden');
+                }
+            @endif
         });
     </script>
 @endpush

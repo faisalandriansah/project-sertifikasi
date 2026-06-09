@@ -131,7 +131,7 @@
                         <th class="text-left px-4 py-3 font-semibold text-zinc-500 text-xs uppercase tracking-wide">
                             Harga Jual
                         </th>
-                        <th class="text-right px-4 py-3 font-semibold text-zinc-500 text-xs uppercase tracking-wide">
+                        <th class="text-center px-4 py-3 font-semibold text-zinc-500 text-xs uppercase tracking-wide">
                             Aksi
                         </th>
                     </tr>
@@ -186,21 +186,19 @@
 
                             {{-- Aksi --}}
                             <td class="px-4 py-3">
-                                <div class="flex items-center justify-end gap-1.5">
+                                <div class="flex items-center justify-center gap-1.5">
+                                    <!-- Diubah dari justify-end menjadi justify-center -->
                                     <a href="{{ route('barang.show', $barang) }}"
-                                        class="px-2.5 py-1 text-xs font-medium text-zinc-600 bg-zinc-100
-                                          hover:bg-zinc-200 rounded-md">
+                                        class="px-2.5 py-1 text-xs font-medium text-zinc-600 bg-zinc-100 hover:bg-zinc-200 rounded-md">
                                         Detail
                                     </a>
                                     <a href="{{ route('barang.edit', $barang) }}"
-                                        class="px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50
-                                          hover:bg-brand-100 rounded-md">
+                                        class="px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-md">
                                         Edit
                                     </a>
                                     <button type="button"
                                         onclick="konfirmasiHapus('{{ route('barang.destroy', $barang) }}', '{{ $barang->nama_barang }}')"
-                                        class="px-2.5 py-1 text-xs font-medium text-red-600 bg-red-50
-                                               hover:bg-red-100 rounded-md">
+                                        class="px-2.5 py-1 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md">
                                         Hapus
                                     </button>
                                 </div>
